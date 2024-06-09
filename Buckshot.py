@@ -17,6 +17,7 @@ class ValidMoves(Enum):
     USE_CIGARETTES = 4
     USE_BEER = 5
     USE_MAGNIFYING_GLASS = 6
+    NO_MOVE = -1
 
     
     
@@ -188,6 +189,8 @@ class Buckshot:
             self.player_items.remove(item)
         else:
             self.dealer_items.remove(item)
+
+
     def isEnd(self):
         return self.player_health == 0 or self.dealer_health == 0
 

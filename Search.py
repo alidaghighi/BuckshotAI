@@ -42,7 +42,7 @@ class Search:
         elif len(game.loaded_shells) > 2 and game.num_blanks_bullet > 0 and Items.HANDCUFFS in game.dealer_items:
             return ValidMoves.USE_HANDCUFFS
         else:
-            return random.choice(game.get_all_actions())    
+            return ValidMoves.NO_MOVE
         
         
     def minimax(game: Buckshot, depth: int, maximizingPlayer: bool):
@@ -96,3 +96,15 @@ class Search:
         
     def gameEvaluation(game: Buckshot):
         return game.player_health - game.dealer_health
+    
+    def search(game: Buckshot, depth: int, maximizingPlayer: bool):
+        bestMove = None
+        bestValue = float('-inf')
+        for action in game.get_all_actions():
+            new_game = deepcopy(game)
+            new_game.move(action)
+            value = Search.minimax(new_game, depth, maximizingPlayer)
+            if value > bestValue:
+                bestValue = value
+                bestMove = action
+        return bestMove

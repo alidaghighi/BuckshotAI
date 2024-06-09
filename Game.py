@@ -168,6 +168,8 @@ def main():
             typePrint("Dealer's items:")
             displayItems(game.dealer_items)
             move = Search.obvious_moves(game)
+            if move == ValidMoves.NO_MOVE:
+                move = Search.search(game, 3, True)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
             match move:
