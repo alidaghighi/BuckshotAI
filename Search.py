@@ -45,5 +45,23 @@ class Search:
             return random.choice(game.get_all_actions())    
         
         
-    def minimax(game: Buckshot, depth: int):
-        pass
+    def minimax(game: Buckshot, depth: int, maximizingPlayer: bool):
+        if depth == 0 or game.isEnd():
+            return game.evaluate()
+        
+        if maximizingPlayer:
+            maxEval = float('-inf')
+            for action in game.get_all_actions():
+                new_game = game.copy()
+                new_game.move(action)
+                eval = Search.minimax(new_game, depth - 1, False)
+                maxEval = max(maxEval, eval)
+            return maxEval
+        else:
+            minEval = float('inf')
+            for action in game.get_all_actions():
+                new_game = game.copy()
+                new_game.move(action)
+                eval = Search.minimax(new_game, depth - 1, True)
+                minEval = min(minEval, eval)
+            return minEval
