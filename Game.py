@@ -168,7 +168,7 @@ def main():
             typePrint("Dealer's items:")
             displayItems(game.dealer_items)
             move = Search.obvious_moves(game)
-            if move == ValidMoves.NO_MOVE:
+            if move == ValidMoves.NO_MOVE: # For some reason, the minimax algorithm is not working as expected, Dealer shoots himself till death. :)
                 move = Search.search(game, 3, True)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
