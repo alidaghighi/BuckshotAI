@@ -141,9 +141,9 @@ def main():
     )
     while not game.isEnd():
         typePrint("\n\n")
-        # typePrint(f"The number of blank bullets: {game.num_blanks_bullet}")
-        # typePrint(f"The number of live bullets: {game.num_lives_bullet}")
-        typePrint(f"shells: {game.loaded_shells}")
+        typePrint(f"The number of blank bullets: {game.num_blanks_bullet}")
+        typePrint(f"The number of live bullets: {game.num_lives_bullet}")
+        # typePrint(f"shells: {game.loaded_shells}")
         if player_turn:
             typePrint(f"now it's {name}'s turn: ")
             typePrint(f"Dealer's health: {game.dealer_health}")
