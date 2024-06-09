@@ -27,15 +27,15 @@ class InvalidMoveError(Exception):
 class Buckshot:
     def __init__(
         self,
-        charges: int,
-        player_health: int,
-        player_items: list,
-        num_lives_bullet: int,
-        num_blanks_bullet: int,
-        current_bullet: str,
-        dealer_health: int,
-        dealer_items: list,
-        player_turn: bool,
+        charges: int, # The maximum health 
+        player_health: int, # The player's health
+        player_items: list, # The player's items
+        num_lives_bullet: int, # The number of live bullets
+        num_blanks_bullet: int, # The number of blank bullets
+        current_bullet: str, # The current bullet in the chamber
+        dealer_health: int, # The dealer's health
+        dealer_items: list, # The dealer's items
+        player_turn: bool, # Whose turn it is
     ):
         self.charges = charges
         self.player_health = player_health
