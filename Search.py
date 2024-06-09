@@ -1,4 +1,3 @@
-import time
 import random
 from Buckshot import *
 
@@ -64,4 +63,32 @@ class Search:
                 new_game.move(action)
                 eval = Search.minimax(new_game, depth - 1, True)
                 minEval = min(minEval, eval)
+            return minEval
+
+
+    def minimax_with_pruning(game: Buckshot, depth: int, maximizingPlayer: bool, alpha: int, beta: int):
+        if depth == 0 or game.isEnd():
+            return game.evaluate()
+        
+        if maximizingPlayer:
+            maxEval = float('-inf')
+            for action in game.get_all_actions():
+                new_game = game.copy()
+                new_game.move(action)
+                eval = Search.minimax(new_game, depth - 1, False, alpha, beta)
+                maxEval = max(maxEval, eval)
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+            return maxEval
+        else:
+            minEval = float('inf')
+            for action in game.get_all_actions():
+                new_game = game.copy()
+                new_game.move(action)
+                eval = Search.minimax(new_game, depth - 1, True, alpha, beta)
+                minEval = min(minEval, eval)
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break
             return minEval
