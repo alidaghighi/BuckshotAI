@@ -1,4 +1,5 @@
 import random
+from copy import deepcopy
 from Buckshot import *
 
 class Search:
@@ -46,12 +47,12 @@ class Search:
         
     def minimax(game: Buckshot, depth: int, maximizingPlayer: bool):
         if depth == 0 or game.isEnd():
-            return game.evaluate()
+            return Search.gameEvaluation(game)
         
         if maximizingPlayer:
             maxEval = float('-inf')
             for action in game.get_all_actions():
-                new_game = game.copy()
+                new_game = deepcopy(game)
                 new_game.move(action)
                 eval = Search.minimax(new_game, depth - 1, False)
                 maxEval = max(maxEval, eval)
@@ -59,7 +60,7 @@ class Search:
         else:
             minEval = float('inf')
             for action in game.get_all_actions():
-                new_game = game.copy()
+                new_game = deepcopy(game)
                 new_game.move(action)
                 eval = Search.minimax(new_game, depth - 1, True)
                 minEval = min(minEval, eval)
@@ -68,12 +69,12 @@ class Search:
 
     def minimax_with_pruning(game: Buckshot, depth: int, maximizingPlayer: bool, alpha: int, beta: int):
         if depth == 0 or game.isEnd():
-            return game.evaluate()
+            return Search.gameEvaluation(game)
         
         if maximizingPlayer:
             maxEval = float('-inf')
             for action in game.get_all_actions():
-                new_game = game.copy()
+                new_game = deepcopy(game)
                 new_game.move(action)
                 eval = Search.minimax(new_game, depth - 1, False, alpha, beta)
                 maxEval = max(maxEval, eval)
@@ -84,7 +85,7 @@ class Search:
         else:
             minEval = float('inf')
             for action in game.get_all_actions():
-                new_game = game.copy()
+                new_game = deepcopy(game)
                 new_game.move(action)
                 eval = Search.minimax(new_game, depth - 1, True, alpha, beta)
                 minEval = min(minEval, eval)
@@ -92,3 +93,6 @@ class Search:
                 if beta <= alpha:
                     break
             return minEval
+        
+    def gameEvaluation(game: Buckshot):
+        return game.player_health - game.dealer_health
