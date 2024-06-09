@@ -1,6 +1,7 @@
 import time
 import random
 from Buckshot import *
+from Search import *
 
 def typePrint(m):
     l = list(m)
@@ -70,45 +71,6 @@ def displayMove(move):
             return "Shooting Player."
         case _:
             return "Unknown move."
-
-
-def obvious_moves(game: Buckshot):
-    
-    # obvious moves
-# |------------- Condition ------------- | ------------- Move ------------- |
-# | Is the shell live, does the current  | Use the hand saw                 |
-# | player have a hand saw, and is the   |                                  |
-# | other player's health equal to 2?    |                                  |
-# |--------------------------------------|----------------------------------|
-# | Is the shell live and the current    | Shoot the other player           |  
-# | player does not have a hand saw?     |                                  |
-# |--------------------------------------|----------------------------------|
-# | Is the shell blank? Shoot self       | Use the magnifying glass         |
-# | Does the current player have a       |                                  |
-# | magnifying glass, and is the current |                                  | 
-# | shell unknown?                       |                                  |
-# |--------------------------------------|----------------------------------|
-# | Is the current player not on maximum | Use cigarettes                   |
-# | health?                              |                                  |
-# |--------------------------------------|----------------------------------|
-# | Is there more than 2 shells in the   | Use handcuffs                    |
-# | gun, with at least one blank shell?  |                                  |
-# |--------------------------------------|----------------------------------|
-
-    if game.current_bullet == "live" and game.dealer_items == Items.HAND_SAW and game.dealer_health == 2:
-        return ValidMoves.USE_HAND_SAW
-    elif game.current_bullet == "live" and Items.HAND_SAW not in game.dealer_items:
-        return ValidMoves.SHOOT_P
-    elif game.current_bullet == "blank":
-        return ValidMoves.SHOOT_D
-    elif game.current_bullet == None and Items.MAGNIFYING_GLASS in game.dealer_items:
-        return ValidMoves.USE_MAGNIFYING_GLASS
-    elif game.player_health < 4 and Items.CIGARETTES in game.dealer_items:
-        return ValidMoves.USE_CIGARETTES
-    elif len(game.loaded_shells) > 2 and game.num_blanks_bullet > 0 and Items.HANDCUFFS in game.dealer_items:
-        return ValidMoves.USE_HANDCUFFS
-    else:
-        return random.choice(game.get_all_actions())
     
         
 def main():
@@ -205,7 +167,7 @@ def main():
             time.sleep(0.5)
             typePrint("Dealer's items:")
             displayItems(game.dealer_items)
-            move = obvious_moves(game)
+            move = Search.obvious_moves(game)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
             match move:
@@ -231,4 +193,9 @@ def main():
                 case _:
                     typePrint("Invalid move.")
                     continue 
+    typePrint("GAME OVER.")
+    if game.player_health > 0:
+        typePrint("Player Won.")
+    else:
+        typePrint("Dealer Won.")
 main()
