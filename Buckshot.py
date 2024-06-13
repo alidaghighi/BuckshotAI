@@ -45,8 +45,7 @@ class Buckshot:
     def loadedShells(self) -> list[Literal["live", "blank"] | None]:
         # Generating 2 random numbers that the sum of them can be maximum 8. Each number has to be minimum 1 and maximum 8.
         while True:
-            # self.num_lives_bullet, self.num_blanks_bullet = (random.randint(1, 8), random.randint(1, 8)) if self.round > 1 else (random.randint(1, 2), random.randint(1, 2))
-            self.num_lives_bullet, self.num_blanks_bullet = (random.randint(1, 8), random.randint(1, 8)) if self.round > 1 else (2, 1)
+            self.num_lives_bullet, self.num_blanks_bullet = (random.randint(1, 8), random.randint(1, 8)) if self.round > 1 else (random.randint(1, 2), random.randint(1, 2))
             if self.num_lives_bullet + self.num_blanks_bullet <= 8:
                 break
         shells = ["live"] * self.num_lives_bullet + ["blank"] * self.num_blanks_bullet
