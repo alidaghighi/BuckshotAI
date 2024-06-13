@@ -97,11 +97,11 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
                 typePrint("Dealer's new items: ")
                 displayItems(dealer_new_items)
             continue
-        
-        if game.dealer_health <= 2:
-            game.dealer_sudden_death = True
-        if game.player_health <= 2:
-            game.player_sudden_death = True
+        if round == 3:
+            if game.dealer_health <= 2:
+                game.dealer_sudden_death = True
+            if game.player_health <= 2:
+                game.player_sudden_death = True
     
         if player_turn:
             typePrint(f"now it's {name}'s turn: ")
