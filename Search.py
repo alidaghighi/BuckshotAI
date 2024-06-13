@@ -90,10 +90,10 @@ class Search:
             return minEval
         
     def gameEvaluation(game: Buckshot):
+        
+        
         return game.dealer_health - game.player_health
-        # dealer_evaluation = game.dealer_health + len(game.dealer_items) + (game.num_lives_bullet / (game.num_blanks_bullet + game.num_lives_bullet))
-        # player_evaluation = game.player_health + len(game.player_items) 
-        # return dealer_evaluation - player_evaluation
+        
          
     
     def search(game: Buckshot, depth: int, maximizingPlayer: bool):

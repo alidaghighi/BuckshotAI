@@ -98,6 +98,11 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
                 displayItems(dealer_new_items)
             continue
         
+        if game.dealer_health <= 2:
+            game.dealer_sudden_death = True
+        if game.player_health <= 2:
+            game.player_sudden_death = True
+    
         if player_turn:
             typePrint(f"now it's {name}'s turn: ")
             typePrint(f"Dealer's health: {game.dealer_health}")
@@ -109,36 +114,47 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
             p_choice = input("Choose: ").lower().strip(" ")
             match p_choice:
                 case "a":
-                    typePrint("Items:")
-                    displayItems(game.player_items)
-                    item = input("Choose item: ").strip(" ")
-                    match item:
-                        case "c":
-                            game.move(ValidMoves.USE_CIGARETTES)
-                        case "b":
-                            game.move(ValidMoves.USE_BEER)
-                        case "s":
-                            game.move(ValidMoves.USE_HAND_SAW)
-                            typePrint("Now you deal double damage for one turn.")
-                        case "m":
-                            game.move(ValidMoves.USE_MAGNIFYING_GLASS)
-                            typePrint("You see the bullet in the chamber.")
-                            typePrint(f"The bullet is {game.current_bullet}")
-                        case _:
-                            typePrint("Invalid item.")
-                            continue
+                    if len(game.player_items) > 0:
+                        typePrint("Items:")
+                        displayItems(game.player_items)
+                        item = input("Choose item: ").strip(" ")
+                        match item:
+                            case "c":
+                                game.move(ValidMoves.USE_CIGARETTES)
+                            case "b":
+                                game.move(ValidMoves.USE_BEER)
+                            case "s":
+                                game.move(ValidMoves.USE_HAND_SAW)
+                                typePrint("Now you deal double damage for one turn.")
+                            case "m":
+                                game.move(ValidMoves.USE_MAGNIFYING_GLASS)
+                                typePrint("You see the bullet in the chamber.")
+                                typePrint(f"The bullet is {game.current_bullet}")
+                            case "q","quit","back":
+                                continue
+                            case _:
+                                typePrint("Invalid item.")
+                                continue
+                    else:
+                        typePrint("No items in the inventory.")
+                        continue
                 case "b":
                     typePrint("Who do you want to shoot?")
                     typePrint("a) Dealer")
                     typePrint("b) Yourself")
                     choice = input("Choose: ").lower().strip(" ")
-                    if choice == "a":
-                        game.move(ValidMoves.SHOOT_D)
-                    elif choice == "b":
-                        game.move(ValidMoves.SHOOT_P)
-                    else:
-                        typePrint("Invalid choice.")
-                        continue
+                    match choice:
+                        case "a":
+                            game.move(ValidMoves.SHOOT_D)
+                        case "b":
+                            game.move(ValidMoves.SHOOT_P)
+                        case "q","quit","back":
+                            continue
+                        case _:
+                            typePrint("Invalid choice.")
+                            continue        
+                    
+                    
                 case "q","quit","back":
                     continue
                 case _:
@@ -239,8 +255,9 @@ def main():
                 typePrint("ROUND 3")
                 typePrint("Initial HP: 6")
                 typePrint("Careful...")
-                typePrint("If the HP goes lower than 2...")
+                typePrint("If the HP goes lower than 3...")
                 typePrint("IT IS SUDDEN DEATH!")
+                typePrint("And once you enter sudden death, you CAN NOT go back!")
                 typePrint("Have fun :)")
                 playerItems = itemGenerator(4)
                 dealerItems = itemGenerator(4)
@@ -248,7 +265,6 @@ def main():
                 displayItems(playerItems)
                 typePrint("Dealer's Starting Items:")
                 displayItems(dealerItems)
-                # TODO: add sudden death to the game state
                 StartRound(3, scores, playerItems, dealerItems)
                 break
         round += 1

@@ -38,6 +38,8 @@ class Buckshot:
         self.dealer_items = dealer_items
         self.player_turn = player_turn
         self.gun_is_sawed = False
+        self.player_sudden_death = False
+        self.dealer_sudden_death = False
         self.loaded_shells = self.loadedShells()
     
     def loadedShells(self) -> list[Literal["live", "blank"] | None]:
@@ -89,10 +91,14 @@ class Buckshot:
                 except IndexError:
                     pass
                 if round == "live":
-                    self.dealer_health -= 1 if not self.gun_is_sawed else 2
-                    self.dealer_health = max(0, self.dealer_health)
-                    self.num_lives_bullet -= 1
-                    self.player_turn = not self.player_turn # After each shot, it is the other player's turn
+                    if self.dealer_sudden_death:
+                        self.dealer_health = 0
+                        self.player_turn = not self.player_turn
+                    else:
+                        self.dealer_health -= 1 if not self.gun_is_sawed else 2
+                        self.dealer_health = max(0, self.dealer_health)
+                        self.num_lives_bullet -= 1
+                        self.player_turn = not self.player_turn # After each shot, it is the other player's turn
                 elif round == "blank":
                     self.current_bullet = None
                     self.gun_is_sawed = False
@@ -106,10 +112,14 @@ class Buckshot:
                 except IndexError:
                     pass
                 if round == "live":
-                    self.player_health -= 1 if not self.gun_is_sawed else 2
-                    self.player_health = max(0, self.player_health)
-                    self.num_lives_bullet -= 1
-                    self.player_turn = not self.player_turn # After each shot, it is the other player's turn
+                    if self.player_sudden_death:
+                        self.player_health = 0
+                        self.player_turn = not self.player_turn
+                    else:
+                        self.player_health -= 1 if not self.gun_is_sawed else 2
+                        self.player_health = max(0, self.player_health)
+                        self.num_lives_bullet -= 1
+                        self.player_turn = not self.player_turn # After each shot, it is the other player's turn
                 elif round == "blank":
                     self.current_bullet = None
                     self.gun_is_sawed = False
