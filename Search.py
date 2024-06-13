@@ -133,7 +133,8 @@ class Search:
         for action in game.get_all_actions():
             new_game = deepcopy(game)
             new_game.move(action)
-            value = Search.minimax(new_game, depth, maximizingPlayer)
+            # value = Search.minimax(new_game, depth, maximizingPlayer)
+            value = Search.minimax_with_pruning(new_game, depth, maximizingPlayer, float('-inf'), float('inf'))
             if value > bestValue:
                 bestValue = value
                 bestMove = action

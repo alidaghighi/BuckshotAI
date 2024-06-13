@@ -171,7 +171,7 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
             time.sleep(0.5)
             typePrint("Dealer's items:")
             displayItems(game.dealer_items)
-            move = Search.search(game, 10, True)
+            move = Search.search(game, 18, True)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
             match move:
