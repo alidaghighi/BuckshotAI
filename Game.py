@@ -76,6 +76,7 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
         typePrint(f"The number of blank bullets: {game.num_blanks_bullet}")
         typePrint(f"The number of live bullets: {game.num_lives_bullet}")
         if  game.num_blanks_bullet == 0 and game.num_lives_bullet == 0:
+            # TODO: adding new items to the list of the items for both
             typePrint("The gun is empty.")
             typePrint("Reloading...")
             game.reload()

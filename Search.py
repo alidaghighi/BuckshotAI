@@ -8,7 +8,7 @@ class Search:
         
     def obvious_moves(game: Buckshot):
         
-        # obvious moves
+    # obvious move
     # |------------- Condition ------------- | ------------- Move ------------- |
     # | Is the shell live, does the current  | Use the hand saw                 |
     # | player have a hand saw, and is the   |                                  |
