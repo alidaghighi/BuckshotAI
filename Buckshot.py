@@ -4,24 +4,19 @@ from typing import Literal
 from TypePrint import typePrint
 
 class Items(Enum):
-    HAND_SAW = 1
-    CIGARETTES = 2
-    BEER = 3
-    MAGNIFYING_GLASS = 4
+    HAND_SAW = 0
+    CIGARETTES = 1
+    BEER = 2
+    MAGNIFYING_GLASS = 3
 
 class ValidMoves(Enum):
     SHOOT_D = 0
     SHOOT_P = 1
-    USE_HAND_SAW = 3
-    USE_CIGARETTES = 4
-    USE_BEER = 5
-    USE_MAGNIFYING_GLASS = 6
+    USE_HAND_SAW = 2
+    USE_CIGARETTES = 3
+    USE_BEER = 4
+    USE_MAGNIFYING_GLASS = 5
     NO_MOVE = -1
-
-    
-    
-class InvalidMoveError(Exception):
-    print("Invalid move attempted")
 
 
 class Buckshot:
@@ -81,22 +76,18 @@ class Buckshot:
             all_actions += [ValidMoves.USE_MAGNIFYING_GLASS]
         
             
-        if self.player_turn:
+        if self.num_lives_bullet + self.num_blanks_bullet > 0:
             all_actions += [ValidMoves.SHOOT_D, ValidMoves.SHOOT_P]
-        else:
-            all_actions += [ValidMoves.SHOOT_P, ValidMoves.SHOOT_D]
         
         return all_actions
     
     def move(self, move: ValidMoves):
-        if move not in self.get_all_actions(): 
-            err = f"{move} not possible"
-            raise InvalidMoveError(err)
-        
-        
         match move:
             case ValidMoves.SHOOT_D:
-                round = self.loaded_shells.pop(0)
+                try:
+                    round = self.loaded_shells.pop(0)
+                except IndexError:
+                    pass
                 if round == "live":
                     self.dealer_health -= 1 if not self.gun_is_sawed else 2
                     self.dealer_health = max(0, self.dealer_health)
@@ -110,7 +101,10 @@ class Buckshot:
             
             
             case ValidMoves.SHOOT_P:
-                round = self.loaded_shells.pop(0)
+                try:
+                    round = self.loaded_shells.pop(0)
+                except IndexError:
+                    pass
                 if round == "live":
                     self.player_health -= 1 if not self.gun_is_sawed else 2
                     self.player_health = max(0, self.player_health)
@@ -124,7 +118,10 @@ class Buckshot:
                 
                 
             case ValidMoves.USE_BEER:
-                current = self.loaded_shells.pop()
+                try:
+                    current = self.loaded_shells.pop(0)
+                except IndexError:
+                    pass
                 self.remove_item(Items.BEER)
                 self.current_bullet = None
                 match current:
