@@ -248,6 +248,7 @@ def main():
                 displayItems(playerItems)
                 typePrint("Dealer's Starting Items:")
                 displayItems(dealerItems)
+                # TODO: add sudden death to the game state
                 StartRound(3, scores, playerItems, dealerItems)
                 break
         round += 1

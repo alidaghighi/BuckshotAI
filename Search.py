@@ -33,7 +33,7 @@ class Search:
             return ValidMoves.SHOOT_P
         elif game.current_bullet == "blank":
             return ValidMoves.SHOOT_D
-        elif game.current_bullet == None and Items.MAGNIFYING_GLASS in game.dealer_items:
+        elif game.current_bullet == None and Items.MAGNIFYING_GLASS in game.dealer_items and game.num_lives_bullet + game.num_blanks_bullet > 1:
             return ValidMoves.USE_MAGNIFYING_GLASS
         elif game.player_health < 4 and Items.CIGARETTES in game.dealer_items:
             return ValidMoves.USE_CIGARETTES
