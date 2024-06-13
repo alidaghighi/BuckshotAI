@@ -118,8 +118,10 @@ class Search:
                     dealer_eval += 5
                 case Items.MAGNIFYING_GLASS:
                     dealer_eval += 10
-        live_prob = game.num_lives_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
-        
+        try:
+            live_prob = game.num_lives_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
+        except ZeroDivisionError:
+            live_prob = 0.0
 
         eval = (dealer_eval - player_eval) * live_prob * (game.dealer_health - game.player_health) 
                 
