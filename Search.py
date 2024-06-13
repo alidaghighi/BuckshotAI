@@ -100,6 +100,8 @@ class Search:
     def search(game: Buckshot, depth: int, maximizingPlayer: bool):
         bestMove = None
         bestValue = float('-inf')
+        blank_prob = game.num_blanks_bullet / (game.num_blanks_bullet + game.num_lives_bullet)
+        live_prob = game.num_lives_bullet / (game.num_blanks_bullet + game.num_lives_bullet)
         for action in game.get_all_actions():
             new_game = deepcopy(game)
             new_game.move(action)
@@ -107,4 +109,9 @@ class Search:
             if value > bestValue:
                 bestValue = value
                 bestMove = action
+        if bestMove == None or bestMove == ValidMoves.NO_MOVE:
+            if blank_prob > live_prob:
+                bestMove = ValidMoves.SHOOT_D
+            else:
+                bestMove = ValidMoves.SHOOT_P
         return bestMove
