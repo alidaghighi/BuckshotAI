@@ -51,6 +51,7 @@ class Buckshot:
     
     def loadedShells(self) -> list[Literal["live", "blank"] | None]:
         # Generating 2 random numbers that the sum of them can be maximum 8. Each number has to be minimum 1 and maximum 8.
+        typePrint("Loading the gun...")
         self.num_lives_bullet = random.randint(1, 8)
         self.num_blanks_bullet = 8 - self.num_lives_bullet
         shells = ["live"] * self.num_lives_bullet + ["blank"] * self.num_blanks_bullet
