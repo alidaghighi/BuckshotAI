@@ -101,23 +101,23 @@ class Search:
         for item in game.player_items:
             match item:
                 case Items.BEER:
-                    player_eval += 5
-                case Items.CIGARETTES:
                     player_eval += 10
+                case Items.CIGARETTES:
+                    player_eval += 20
                 case Items.HAND_SAW:
                     player_eval += 5
                 case Items.MAGNIFYING_GLASS:
-                    player_eval += 10
+                    player_eval += 20
         for item in game.dealer_items:
             match item:
                 case Items.BEER:
-                    dealer_eval += 5
-                case Items.CIGARETTES:
                     dealer_eval += 10
+                case Items.CIGARETTES:
+                    dealer_eval += 20
                 case Items.HAND_SAW:
                     dealer_eval += 5
                 case Items.MAGNIFYING_GLASS:
-                    dealer_eval += 10
+                    dealer_eval += 20
         try:
             live_prob = game.num_lives_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
         except ZeroDivisionError:
