@@ -171,10 +171,7 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
             time.sleep(0.5)
             typePrint("Dealer's items:")
             displayItems(game.dealer_items)
-            move = Search.obvious_moves(game)
-            if move == ValidMoves.NO_MOVE:
-                move = Search.search(game, 5, False)
-            # move = Search.search(game, 3, True)
+            move = Search.search(game, 10, True)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
             match move:

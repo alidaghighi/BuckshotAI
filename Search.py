@@ -26,7 +26,15 @@ class Search:
     # | health?                              |                                  |
     # |--------------------------------------|----------------------------------|
 
-        if game.current_bullet == "live" and game.dealer_items == Items.HAND_SAW and game.dealer_health == 2:
+        
+        if Items.CIGARETTES in game.dealer_items:
+            if game.player_turn:
+                if game.player_health < game.charges:
+                    return ValidMoves.USE_CIGARETTES
+            else:
+                if game.dealer_health < game.charges:
+                    return ValidMoves.USE_CIGARETTES
+        elif game.current_bullet == "live" and game.dealer_items == Items.HAND_SAW and game.dealer_health == 2:
             return ValidMoves.USE_HAND_SAW
         elif game.current_bullet == "live" and Items.HAND_SAW not in game.dealer_items:
             return ValidMoves.SHOOT_P
@@ -34,13 +42,6 @@ class Search:
             return ValidMoves.SHOOT_D
         elif game.current_bullet == None and Items.MAGNIFYING_GLASS in game.dealer_items and game.num_lives_bullet + game.num_blanks_bullet > 1:
             return ValidMoves.USE_MAGNIFYING_GLASS
-        elif Items.CIGARETTES in game.dealer_items:
-            if game.player_turn:
-                if game.player_health < game.charges:
-                    return ValidMoves.USE_CIGARETTES
-            else:
-                if game.dealer_health < game.charges:
-                    return ValidMoves.USE_CIGARETTES
         else:
             return ValidMoves.NO_MOVE
         
@@ -120,10 +121,15 @@ class Search:
          
     
     def search(game: Buckshot, depth: int, maximizingPlayer: bool):
-        bestMove = None
-        bestValue = float('-inf')
         blank_prob = game.num_blanks_bullet / (game.num_blanks_bullet + game.num_lives_bullet)
         live_prob = game.num_lives_bullet / (game.num_blanks_bullet + game.num_lives_bullet)
+        if live_prob == 1 or blank_prob == 1:
+            return ValidMoves.SHOOT_D if blank_prob > live_prob else ValidMoves.SHOOT_P
+        move = Search.obvious_moves(game)
+        if move != ValidMoves.NO_MOVE:
+            return move    
+        bestMove = None
+        bestValue = float('-inf')
         for action in game.get_all_actions():
             new_game = deepcopy(game)
             new_game.move(action)
