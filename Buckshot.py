@@ -31,9 +31,6 @@ class Buckshot:
         charges: int, # The maximum health 
         player_health: int, # The player's health
         player_items: list, # The player's items
-        num_lives_bullet: int, # The number of live bullets
-        num_blanks_bullet: int, # The number of blank bullets
-        current_bullet: str, # The current bullet in the chamber
         dealer_health: int, # The dealer's health
         dealer_items: list, # The dealer's items
         player_turn: bool, # Whose turn it is
@@ -41,9 +38,9 @@ class Buckshot:
         self.charges = charges
         self.player_health = player_health
         self.player_items = player_items
-        self.num_lives_bullet = num_lives_bullet
-        self.num_blanks_bullet = num_blanks_bullet
-        self.current_bullet = current_bullet
+        self.num_lives_bullet = 0
+        self.num_blanks_bullet = 0
+        self.current_bullet = None
         self.dealer_health = dealer_health
         self.dealer_items = dealer_items
         self.player_turn = player_turn
@@ -111,6 +108,7 @@ class Buckshot:
                     self.current_bullet = None
                     self.gun_is_sawed = False
                     self.num_blanks_bullet -= 1
+                    self.player_turn = not self.player_turn
                 elif round == None:
                     self.current_bullet = None
                     self.loaded_shells = self.loadedShells()
@@ -131,6 +129,7 @@ class Buckshot:
                     self.current_bullet = None
                     self.gun_is_sawed = False
                     self.num_blanks_bullet -= 1
+                    self.player_turn = not self.player_turn
                 elif round == None:
                     self.current_bullet = None
                     self.loaded_shells = self.loadedShells()
