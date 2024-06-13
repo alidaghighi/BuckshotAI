@@ -49,12 +49,12 @@ class Buckshot:
         self.player_turn = player_turn
         self.handcuffed = 0 # 0 = not handcuffed, 1 = handcuffed and will remove next turn, 2 = handcuffed and will skip next turn
         self.gun_is_sawed = False
-        self.live_probability = 1
-        self.blank_probability = 0
         self.loaded_shells = self.loadedShells()
     
     def loadedShells(self) -> list[Literal["live", "blank"] | None]:
-        # print(self.num_lives_bullet, self.num_blanks_bullet)
+        # Generating 2 random numbers that the sum of them can be maximum 8. Each number has to be minimum 1 and maximum 8.
+        self.num_lives_bullet = random.randint(1, 8)
+        self.num_blanks_bullet = 8 - self.num_lives_bullet
         shells = ["live"] * self.num_lives_bullet + ["blank"] * self.num_blanks_bullet
         def custom_shuffle(lst):
             n = len(lst)
@@ -102,18 +102,16 @@ class Buckshot:
                 if round == "live":
                     self.dealer_health -= 1 if not self.gun_is_sawed else 2
                     self.dealer_health = max(0, self.dealer_health)
+                    self.num_lives_bullet -= 1
                     if self.handcuffed > 0: # Decrement turns left until next handcuff
                         self.handcuffed -= 1
                     else:
-                        self.player_turn = False if self.player_turn else True # If the player shoots dealer with a live, it is not the players turn. If the dealer shoots themselves with a live, it is the players turn.
+                        self.player_turn = not self.player_turn # After each shot, it is the other player's turn
                 elif round == "blank":
                     self.current_bullet = None
                     self.gun_is_sawed = False
+                    self.num_blanks_bullet -= 1
                 elif round == None:
-                    if self.num_blanks_bullet > self.num_lives_bullet:
-                        self.num_lives_bullet += 1
-                    else:
-                        self.num_blanks_bullet += 1
                     self.current_bullet = None
                     self.loaded_shells = self.loadedShells()
                     self.move(ValidMoves.SHOOT_D)
@@ -124,18 +122,16 @@ class Buckshot:
                 if round == "live":
                     self.player_health -= 1 if not self.gun_is_sawed else 2
                     self.player_health = max(0, self.player_health)
+                    self.num_lives_bullet -= 1
                     if self.handcuffed > 0: # Decrement turns left until next handcuff
                         self.handcuffed -= 1
                     else:
-                        self.player_turn = True if self.player_turn else False # If the player shoots themselves with a live, it is not the players turn. If the dealer shoots the player with a live, it is the players turn.
+                        self.player_turn = not self.player_turn # After each shot, it is the other player's turn
                 elif round == "blank":
                     self.current_bullet = None
                     self.gun_is_sawed = False
+                    self.num_blanks_bullet -= 1
                 elif round == None:
-                    if self.num_blanks_bullet > self.num_lives_bullet:
-                        self.num_lives_bullet += 1
-                    else:
-                        self.num_blanks_bullet += 1
                     self.current_bullet = None
                     self.loaded_shells = self.loadedShells()
                     self.move(ValidMoves.SHOOT_P)

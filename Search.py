@@ -17,8 +17,9 @@ class Search:
     # | Is the shell live and the current    | Shoot the other player           |  
     # | player does not have a hand saw?     |                                  |
     # |--------------------------------------|----------------------------------|
-    # | Is the shell blank? Shoot self       | Use the magnifying glass         |
-    # | Does the current player have a       |                                  |
+    # | Is the shell blank?                  | Shoot self                       |
+    # |--------------------------------------|----------------------------------|
+    # | Does the current player have a       | Use the magnifying glass         |
     # | magnifying glass, and is the current |                                  | 
     # | shell unknown?                       |                                  |
     # |--------------------------------------|----------------------------------|
@@ -95,7 +96,11 @@ class Search:
             return minEval
         
     def gameEvaluation(game: Buckshot):
-        return game.player_health - game.dealer_health
+        return game.dealer_health - game.player_health
+        # dealer_evaluation = game.dealer_health + len(game.dealer_items) + (game.num_lives_bullet / (game.num_blanks_bullet + game.num_lives_bullet))
+        # player_evaluation = game.player_health + len(game.player_items) 
+        # return dealer_evaluation - player_evaluation
+         
     
     def search(game: Buckshot, depth: int, maximizingPlayer: bool):
         bestMove = None

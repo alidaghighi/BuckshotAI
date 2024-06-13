@@ -88,7 +88,7 @@ def main():
         if name:
             typePrint("INVALID NAME.")
         name = input("ENTER NAME: ").strip(" ").upper()
-    items = [Items.CIGARETTES,Items.MAGNIFYING_GLASS]
+    items = []
     player_turn =  True
     game = Buckshot(
         charges=4,
@@ -101,6 +101,7 @@ def main():
         dealer_items=items.copy(),
         player_turn=player_turn,
     )
+    
     while not game.isEnd():
         typePrint("\n\n")
         typePrint(f"The number of blank bullets: {game.num_blanks_bullet}")
@@ -167,9 +168,9 @@ def main():
             time.sleep(0.5)
             typePrint("Dealer's items:")
             displayItems(game.dealer_items)
-            # move = Search.obvious_moves(game)
-            # if move == ValidMoves.NO_MOVE: # For some reason, the minimax algorithm is not working as expected, Dealer shoots himself till death. :)
-            #     move = Search.search(game, 3, True)
+            move = Search.obvious_moves(game)
+            if move == ValidMoves.NO_MOVE:
+                move = Search.search(game, 3, True)
             move = Search.search(game, 3, True)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
