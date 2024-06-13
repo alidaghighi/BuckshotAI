@@ -77,7 +77,7 @@ class Search:
             for action in game.get_all_actions():
                 new_game = deepcopy(game)
                 new_game.move(action)
-                eval = Search.minimax(new_game, depth - 1, False, alpha, beta)
+                eval = Search.minimax_with_pruning(new_game, depth - 1, False, alpha, beta)
                 maxEval = max(maxEval, eval)
                 alpha = max(alpha, eval)
                 if beta <= alpha:
@@ -88,7 +88,7 @@ class Search:
             for action in game.get_all_actions():
                 new_game = deepcopy(game)
                 new_game.move(action)
-                eval = Search.minimax(new_game, depth - 1, True, alpha, beta)
+                eval = Search.minimax_with_pruning(new_game, depth - 1, True, alpha, beta)
                 minEval = min(minEval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha:
