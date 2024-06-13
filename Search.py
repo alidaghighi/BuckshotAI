@@ -26,9 +26,6 @@ class Search:
     # | Is the current player not on maximum | Use cigarettes                   |
     # | health?                              |                                  |
     # |--------------------------------------|----------------------------------|
-    # | Is there more than 2 shells in the   | Use handcuffs                    |
-    # | gun, with at least one blank shell?  |                                  |
-    # |--------------------------------------|----------------------------------|
 
         if game.current_bullet == "live" and game.dealer_items == Items.HAND_SAW and game.dealer_health == 2:
             return ValidMoves.USE_HAND_SAW
@@ -40,8 +37,6 @@ class Search:
             return ValidMoves.USE_MAGNIFYING_GLASS
         elif game.player_health < 4 and Items.CIGARETTES in game.dealer_items:
             return ValidMoves.USE_CIGARETTES
-        elif len(game.loaded_shells) > 2 and game.num_blanks_bullet > 0 and Items.HANDCUFFS in game.dealer_items:
-            return ValidMoves.USE_HANDCUFFS
         else:
             return ValidMoves.NO_MOVE
         

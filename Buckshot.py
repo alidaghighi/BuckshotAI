@@ -4,7 +4,6 @@ from typing import Literal
 from TypePrint import typePrint
 
 class Items(Enum):
-    HANDCUFFS = 0
     HAND_SAW = 1
     CIGARETTES = 2
     BEER = 3
@@ -13,7 +12,6 @@ class Items(Enum):
 class ValidMoves(Enum):
     SHOOT_D = 0
     SHOOT_P = 1
-    USE_HANDCUFFS = 2
     USE_HAND_SAW = 3
     USE_CIGARETTES = 4
     USE_BEER = 5
@@ -29,31 +27,30 @@ class InvalidMoveError(Exception):
 class Buckshot:
     def __init__(
         self,
-        charges: int, # The maximum health 
-        player_health: int, # The player's health
+        round: int, # The round 
         player_items: list, # The player's items
-        dealer_health: int, # The dealer's health
         dealer_items: list, # The dealer's items
         player_turn: bool, # Whose turn it is
     ):
-        self.charges = charges
-        self.player_health = player_health
+        self.round = round
+        self.charges = round * 2 # round 1: 2, round 2: 4, round 3: 6
+        self.player_health = round * 2 # round 1: max HP = 2, round 2: max HP = 4, round 3: max HP = 6
         self.player_items = player_items
         self.num_lives_bullet = 0
         self.num_blanks_bullet = 0
         self.current_bullet = None
-        self.dealer_health = dealer_health
+        self.dealer_health = round * 2 # round 1: max HP = 2, round 2: max HP = 4, round 3: max HP = 6
         self.dealer_items = dealer_items
         self.player_turn = player_turn
-        self.handcuffed = 0 # 0 = not handcuffed, 1 = handcuffed and will remove next turn, 2 = handcuffed and will skip next turn
         self.gun_is_sawed = False
         self.loaded_shells = self.loadedShells()
     
     def loadedShells(self) -> list[Literal["live", "blank"] | None]:
         # Generating 2 random numbers that the sum of them can be maximum 8. Each number has to be minimum 1 and maximum 8.
-        typePrint("Loading the gun...")
-        self.num_lives_bullet = random.randint(1, 8)
-        self.num_blanks_bullet = 8 - self.num_lives_bullet
+        while True:
+            self.num_lives_bullet, self.num_blanks_bullet = (random.randint(1, 8), random.randint(1, 8)) if self.round > 1 else (random.randint(1, 2), random.randint(1, 2))
+            if self.num_lives_bullet + self.num_blanks_bullet <= 8:
+                break
         shells = ["live"] * self.num_lives_bullet + ["blank"] * self.num_blanks_bullet
         def custom_shuffle(lst):
             n = len(lst)
@@ -63,6 +60,10 @@ class Buckshot:
         custom_shuffle(shells)
         shells += [None] * (8 - len(shells))
         return shells
+    
+    def reload(self):
+        self.loaded_shells = self.loadedShells()
+    
     
     def get_all_actions(self):
         all_actions = []
@@ -74,8 +75,6 @@ class Buckshot:
             all_actions += [ValidMoves.USE_BEER]
         if Items.CIGARETTES in current_items:
             all_actions += [ValidMoves.USE_CIGARETTES]
-        if Items.HANDCUFFS in current_items and self.handcuffed == 0:
-            all_actions += [ValidMoves.USE_HANDCUFFS]
         if Items.HAND_SAW in current_items and self.gun_is_sawed == False:
             all_actions += [ValidMoves.USE_HAND_SAW]
         if Items.MAGNIFYING_GLASS in current_items:
@@ -102,19 +101,12 @@ class Buckshot:
                     self.dealer_health -= 1 if not self.gun_is_sawed else 2
                     self.dealer_health = max(0, self.dealer_health)
                     self.num_lives_bullet -= 1
-                    if self.handcuffed > 0: # Decrement turns left until next handcuff
-                        self.handcuffed -= 1
-                    else:
-                        self.player_turn = not self.player_turn # After each shot, it is the other player's turn
+                    self.player_turn = not self.player_turn # After each shot, it is the other player's turn
                 elif round == "blank":
                     self.current_bullet = None
                     self.gun_is_sawed = False
                     self.num_blanks_bullet -= 1
                     self.player_turn = not self.player_turn
-                elif round == None:
-                    self.current_bullet = None
-                    self.loaded_shells = self.loadedShells()
-                    self.move(ValidMoves.SHOOT_D)
             
             
             case ValidMoves.SHOOT_P:
@@ -123,26 +115,23 @@ class Buckshot:
                     self.player_health -= 1 if not self.gun_is_sawed else 2
                     self.player_health = max(0, self.player_health)
                     self.num_lives_bullet -= 1
-                    if self.handcuffed > 0: # Decrement turns left until next handcuff
-                        self.handcuffed -= 1
-                    else:
-                        self.player_turn = not self.player_turn # After each shot, it is the other player's turn
+                    self.player_turn = not self.player_turn # After each shot, it is the other player's turn
                 elif round == "blank":
                     self.current_bullet = None
                     self.gun_is_sawed = False
                     self.num_blanks_bullet -= 1
                     self.player_turn = not self.player_turn
-                elif round == None:
-                    self.current_bullet = None
-                    self.loaded_shells = self.loadedShells()
-                    self.move(ValidMoves.SHOOT_P)
                 
                 
             case ValidMoves.USE_BEER:
-                self.loaded_shells.pop()
+                current = self.loaded_shells.pop()
                 self.remove_item(Items.BEER)
                 self.current_bullet = None
-                
+                match current:
+                    case "live":
+                        self.num_lives_bullet -= 1
+                    case "blank":
+                        self.num_blanks_bullet -= 1
                 
             
             case ValidMoves.USE_MAGNIFYING_GLASS:
@@ -153,23 +142,15 @@ class Buckshot:
             case ValidMoves.USE_CIGARETTES:
                 if self.player_turn:
                     self.player_health += 1
-                    self.player_health = max(self.charges, self.player_health)
+                    if self.player_health > self.charges:
+                        self.player_health = self.charges
                 else:
                     self.dealer_health += 1
-                    self.dealer_health = max(self.charges, self.dealer_health)
+                    if self.dealer_health > self.charges:
+                        self.dealer_health = self.charges
                 
                 
                 self.remove_item(Items.CIGARETTES)
-                
-                
-            
-            case ValidMoves.USE_HANDCUFFS:
-                if self.handcuffed: return None
-                
-                self.remove_item(Items.HANDCUFFS)
-                
-                self.handcuffed = 2
-                
                 
                 
             case ValidMoves.USE_HAND_SAW:
