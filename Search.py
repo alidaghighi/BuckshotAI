@@ -91,7 +91,7 @@ class Search:
         
     def gameEvaluation(game: Buckshot):
         
-        
+        # TODO: Implement a better evaluation function
         return game.dealer_health - game.player_health
         
          
