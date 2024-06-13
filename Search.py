@@ -34,8 +34,13 @@ class Search:
             return ValidMoves.SHOOT_D
         elif game.current_bullet == None and Items.MAGNIFYING_GLASS in game.dealer_items and game.num_lives_bullet + game.num_blanks_bullet > 1:
             return ValidMoves.USE_MAGNIFYING_GLASS
-        elif game.player_health < 4 and Items.CIGARETTES in game.dealer_items:
-            return ValidMoves.USE_CIGARETTES
+        elif Items.CIGARETTES in game.dealer_items:
+            if game.player_turn:
+                if game.player_health < game.charges:
+                    return ValidMoves.USE_CIGARETTES
+            else:
+                if game.dealer_health < game.charges:
+                    return ValidMoves.USE_CIGARETTES
         else:
             return ValidMoves.NO_MOVE
         
@@ -92,43 +97,24 @@ class Search:
     def gameEvaluation(game: Buckshot):
         """
         Either one of the players HP is 0 or we are trying to get to the lowest HP possible for the other player
-        Items in the inventory should be considered
         The number of blanks and lives should be considered
         """
-        player_eval = 0
-        dealer_eval = 0
-        
-        for item in game.player_items:
-            match item:
-                case Items.BEER:
-                    player_eval += 10
-                case Items.CIGARETTES:
-                    player_eval += 20
-                case Items.HAND_SAW:
-                    player_eval += 5
-                case Items.MAGNIFYING_GLASS:
-                    player_eval += 20
-        for item in game.dealer_items:
-            match item:
-                case Items.BEER:
-                    dealer_eval += 10
-                case Items.CIGARETTES:
-                    dealer_eval += 20
-                case Items.HAND_SAW:
-                    dealer_eval += 5
-                case Items.MAGNIFYING_GLASS:
-                    dealer_eval += 20
-        try:
-            live_prob = game.num_lives_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
-        except ZeroDivisionError:
-            live_prob = 0.0
-
-        eval = (dealer_eval - player_eval) * live_prob * (game.dealer_health - game.player_health) 
-                
+        eval = 0
         if game.player_health == 0:
             eval = float('-inf')
         elif game.dealer_health == 0:
             eval = float('inf')
+        
+        if game.num_lives_bullet + game.num_blanks_bullet != 0:
+            live_prob = game.num_lives_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
+            blank_prob = game.num_blanks_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
+            if live_prob > blank_prob:
+                eval += 1 * (1 if game.player_turn else -1)
+            else:
+                eval += -1 * (1 if game.player_turn else -1)
+        else:
+            eval += (game.dealer_health - game.player_health) * (1 if game.player_turn else -1)    
+        
         return eval
         
          
@@ -145,9 +131,6 @@ class Search:
             if value > bestValue:
                 bestValue = value
                 bestMove = action
-        if bestMove == None or bestMove == ValidMoves.NO_MOVE:
-            if blank_prob > live_prob:
-                bestMove = ValidMoves.SHOOT_D
-            else:
-                bestMove = ValidMoves.SHOOT_P
+        if bestMove == None:
+            bestMove = ValidMoves.SHOOT_D if blank_prob > live_prob else ValidMoves.SHOOT_P
         return bestMove

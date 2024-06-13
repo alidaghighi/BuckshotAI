@@ -173,8 +173,8 @@ def StartRound(round: int, scores: list, playerItems: list, dealerItems: list):
             displayItems(game.dealer_items)
             move = Search.obvious_moves(game)
             if move == ValidMoves.NO_MOVE:
-                move = Search.search(game, 3, True)
-            move = Search.search(game, 3, True)
+                move = Search.search(game, 5, False)
+            # move = Search.search(game, 3, True)
             typePrint(f"Dealer will {displayMove(move)}")
             time.sleep(0.5)
             match move:
@@ -268,5 +268,16 @@ def main():
                 StartRound(3, scores, playerItems, dealerItems)
                 break
         round += 1
+    
+    
+    typePrint("SCORES:")
+    player_score = scores.count("player")
+    dealer_score = scores.count("dealer")
+    typePrint(f"{name}: {player_score} ")
+    typePrint("DEALER: ", dealer_score)
+    if player_score > dealer_score:
+        typePrint(f"{name} WON!")
+    else:
+        typePrint("DEALER WON!")
     
 main()
