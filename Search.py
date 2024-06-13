@@ -1,4 +1,3 @@
-import random
 from copy import deepcopy
 from Buckshot import *
 
