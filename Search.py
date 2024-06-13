@@ -90,9 +90,44 @@ class Search:
             return minEval
         
     def gameEvaluation(game: Buckshot):
+        """
+        Either one of the players HP is 0 or we are trying to get to the lowest HP possible for the other player
+        Items in the inventory should be considered
+        The number of blanks and lives should be considered
+        """
+        player_eval = 0
+        dealer_eval = 0
         
-        # TODO: Implement a better evaluation function
-        return game.dealer_health - game.player_health
+        for item in game.player_items:
+            match item:
+                case Items.BEER:
+                    player_eval += 5
+                case Items.CIGARETTES:
+                    player_eval += 10
+                case Items.HAND_SAW:
+                    player_eval += 5
+                case Items.MAGNIFYING_GLASS:
+                    player_eval += 10
+        for item in game.dealer_items:
+            match item:
+                case Items.BEER:
+                    dealer_eval += 5
+                case Items.CIGARETTES:
+                    dealer_eval += 10
+                case Items.HAND_SAW:
+                    dealer_eval += 5
+                case Items.MAGNIFYING_GLASS:
+                    dealer_eval += 10
+        live_prob = game.num_lives_bullet / (game.num_lives_bullet + game.num_blanks_bullet)
+        
+
+        eval = (dealer_eval - player_eval) * live_prob * (game.dealer_health - game.player_health) 
+                
+        if game.player_health == 0:
+            eval = float('-inf')
+        elif game.dealer_health == 0:
+            eval = float('inf')
+        return eval
         
          
     
