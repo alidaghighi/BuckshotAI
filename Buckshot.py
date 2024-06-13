@@ -1,6 +1,7 @@
 from enum import *
 import random
 from typing import Literal
+from TypePrint import typePrint
 
 class Items(Enum):
     HANDCUFFS = 0
